@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BackgroundImage extends StatelessWidget {
+  // ignore: use_key_in_widget_constructors
   const BackgroundImage({
     required this.image,
   });

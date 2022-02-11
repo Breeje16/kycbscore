@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kycbscore/presentation/blocs/cubit/auth_cubit.dart';
+import 'package:kycbscore/presentation/blocs/auth/auth_cubit.dart';
+import 'package:kycbscore/presentation/blocs/check_customer/check_customer_cubit.dart';
+import 'package:kycbscore/presentation/blocs/create_customer/create_customer_cubit.dart';
+import 'package:kycbscore/presentation/blocs/find_customer/find_customer_cubit.dart';
+import 'package:kycbscore/presentation/blocs/rate_customer/rate_customer_cubit.dart';
 import 'package:kycbscore/presentation/journeys/splash_screen.dart';
 import 'package:kycbscore/presentation/themes/app_theme.dart';
 
@@ -22,6 +26,21 @@ class MyApp extends StatelessWidget {
         BlocProvider(
             create: (context) =>
                 AuthCubit()),
+        BlocProvider(
+            create: (context) =>
+                CheckCustomerCubit()),
+
+        BlocProvider(
+            create: (context) =>
+                RateCustomerCubit()),
+
+        BlocProvider(
+            create: (context) =>
+                CreateCustomerCubit()),
+
+        BlocProvider(
+            create: (context) =>
+                FindCustomerCubit()),
       ],
       child: MaterialApp(
           debugShowMaterialGrid: false,

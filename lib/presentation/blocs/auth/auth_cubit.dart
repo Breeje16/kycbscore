@@ -12,23 +12,25 @@ class AuthCubit extends Cubit<AuthState> {
 
     emit(AuthLoading());
 
-    await Prefs.setEmail(query['email']);
-    await Prefs.setUserName(query['username']);
-    await Prefs.setFirstName(query['first_name']);
-    await Prefs.setLastName('');
-    await Prefs.setPassword(query['password']);
-
     final response = await MainRepo.signupUser(query);
-    if (response['email'] != null) {
+    if (response['success'] == "User created successfully") {
       final resToken = await MainRepo.getUserToken({
-        "username": query['username'],
+        "email": query['email'],
         "password": query['password'],
       });
+      
       if (resToken['access'] != null) {
+        await Prefs.setEmail(query['email']);
+        await Prefs.setUserName(query['name']);
+        await Prefs.setFirstName(query['name']);
+        await Prefs.setLastName('');
+        await Prefs.setPassword(query['password']);
         await Prefs.setToken(resToken['access']);
         await Prefs.setRefreshToken(resToken['refresh']);
         await Prefs.setIsNewUser(false);
-        var uname = await Prefs.getUserName();
+        await Prefs.setHotelName("");
+        await Prefs.setHotelCity("");
+        await Prefs.setHotelCountry("");
         emit(
           AuthLoaded(
               refreshToken: resToken['refresh'], token: resToken['access']),
@@ -39,7 +41,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
     if (response['message'] == "Token has expired") {
       final responseToken = await MainRepo.getUserToken({
-        "username": query['username'],
+        "email": query['email'],
         "password": query['password'],
       });
       if (responseToken['access'] != null) {
@@ -60,17 +62,14 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> loginUser(Map query) async {
 
-    emit(AuthLoading());
-
-    await Prefs.setUserName(query['username']);
-    await Prefs.setPassword(query['password']);
+    emit(AuthLoading());    
 
     final resToken = await MainRepo.getUserToken(query);
     if (resToken['access'] != null) {
+      await Prefs.setEmail(query['email']);
+      await Prefs.setPassword(query['password']);
       await Prefs.setToken(resToken['access']);
       await Prefs.setRefreshToken(resToken['refresh']);
-      await Prefs.setIsNewUser(false);
-      print(await Prefs.getUserName());
       emit(
         AuthLoaded(
             refreshToken: resToken['refresh'], token: resToken['access']),
@@ -85,6 +84,11 @@ class AuthCubit extends Cubit<AuthState> {
 
     emit(AuthLoading());
     await Prefs.clearPrefs();
-
+    // var uname = await Prefs.getUserName();
+    
+      emit(
+         AuthLogoutLoaded(),
+      );
+    
   }
 }

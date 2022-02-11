@@ -65,6 +65,7 @@ class MainRepo {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
     };
+    
     var response = await dio.get(
       ApiConstants.baseVersion1URL + ApiConstants.customerGET,
       queryParameters: body,
@@ -76,9 +77,31 @@ class MainRepo {
       ),
     );
     return response.data;
+    
+          
   }
 
-  static postCustomerData(body) async {
+  static findCustomerData(body) async {
+    final token = await Prefs.getToken();
+    Map<String, dynamic> headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var response = await dio.get(
+      ApiConstants.baseVersion1URL + ApiConstants.customerGET,
+      queryParameters: body,
+      options: Options(
+        sendTimeout: 50000,
+        receiveTimeout: 50000,
+        headers: headers,
+        responseType: ResponseType.json,
+      ),
+    );
+    return response.data;   
+  }
+
+  static addRatingData(body) async {
     final token = await Prefs.getToken();
     Map<String, dynamic> headers = {
       'Accept': 'application/json',
@@ -97,4 +120,26 @@ class MainRepo {
     );
     return response.data;
   }
+
+  static createCustomer(body) async {
+    final token = await Prefs.getToken();
+    Map<String, dynamic> headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var response = await dio.post(
+      ApiConstants.baseVersion1URL + ApiConstants.addCustomerURL,
+      data: body,
+      options: Options(
+        sendTimeout: 50000,
+        receiveTimeout: 50000,
+        headers: headers,
+        responseType: ResponseType.json,
+      ),
+    );
+    return response.data;
+  }
+
+  
 }

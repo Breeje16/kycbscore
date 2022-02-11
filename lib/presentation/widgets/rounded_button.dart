@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kycbscore/presentation/themes/pallete.dart';
 
+// ignore: must_be_immutable
 class RoundedButton extends StatelessWidget {
   bool isLogin;
 

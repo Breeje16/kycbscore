@@ -1,20 +1,17 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:kycbscore/presentation/blocs/cubit/auth_cubit.dart';
+import 'package:kycbscore/presentation/blocs/auth/auth_cubit.dart';
 import 'package:kycbscore/presentation/journeys/auth/loginscreen.dart';
 import 'package:kycbscore/presentation/journeys/home_screen.dart';
 import 'package:kycbscore/presentation/themes/pallete.dart';
 import 'package:kycbscore/presentation/widgets/background_image.dart';
-import 'package:kycbscore/presentation/widgets/password_input.dart';
-import 'package:kycbscore/presentation/widgets/rounded_button.dart';
-import 'package:kycbscore/presentation/widgets/text_field_input.dart';
 
 class CreateNewAccount extends StatefulWidget {
+  const CreateNewAccount({Key? key}) : super(key: key);
+
   @override
   State<CreateNewAccount> createState() => _CreateNewAccountState();
 }
@@ -204,21 +201,22 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                     ),
                     
                    BlocConsumer<AuthCubit, AuthState>(
-                      buildWhen: (previous, current) =>
-                          current is AuthError,
                       builder: (context, state) {
+                        if(state is AuthLoading){
+                          return const CircularProgressIndicator();
+                        } else
                         if (state is AuthError) {
-                          return const Text("Some Error");
+                          return const Text("Some Error! Try Again");
                         }
                         return const SizedBox.shrink();
                       },
-                      listenWhen: (previous, current) =>
-                          current is AuthLoaded,
                       listener: (context, state) {
-                        Navigator.push(
+                        if(state is AuthLoaded){
+                          Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const HomeScreen()));
+                                builder: (context) => const HomeScreen()), (route) => false);
+                        }                        
                       }),
                     SizedBox(
                       height: 10.h,
@@ -232,10 +230,8 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          var uname = email.text.split("@");
                           Map<String, dynamic> query = {
-                            "username": uname[0].toString(),
-                            "first_name": name.text,
+                            "name": name.text,
                             "email": email.text,
                             "password": password.text,
                             "password2": password2.text
@@ -261,9 +257,9 @@ class _CreateNewAccountState extends State<CreateNewAccount> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push( context,
+                            Navigator.pushAndRemoveUntil( context,
                             MaterialPageRoute(
-                                builder: (context) => LoginScreen()));
+                                builder: (context) => const LoginScreen()), (route) => false);
                       
                           },
                           child: Padding(

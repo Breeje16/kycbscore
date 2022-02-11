@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kycbscore/presentation/journeys/check_screen.dart';
 import 'package:kycbscore/presentation/journeys/profile_screen.dart';
-import 'package:kycbscore/presentation/journeys/rate_screen.dart';
+import 'package:kycbscore/presentation/journeys/rate_screens.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({ Key? key }) : super(key: key);
@@ -15,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int index = 0;
   List listOfScreens = [
-    const RateScreen(),
+    const RateScreens(),
     const CheckScreen(),
     const ProfileScreen()
   ];
@@ -25,14 +25,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Center(
-          child: Text("KYCB Score"),
+        elevation: 2,
+        title: Center(
+          child: Text(
+            "KYCB Score",
+            style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+          ),
         ),
       ),
       body: listOfScreens[index],
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
-          indicatorColor: Colors.blue.shade100,
+          indicatorColor: Colors.purple.shade100,
           labelTextStyle: MaterialStateProperty.all(TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w500,

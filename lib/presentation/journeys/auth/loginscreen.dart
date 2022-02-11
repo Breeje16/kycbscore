@@ -3,13 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:kycbscore/presentation/blocs/cubit/auth_cubit.dart';
+import 'package:kycbscore/presentation/blocs/auth/auth_cubit.dart';
 import 'package:kycbscore/presentation/journeys/auth/create_new_account.dart';
 import 'package:kycbscore/presentation/journeys/home_screen.dart';
 import 'package:kycbscore/presentation/themes/pallete.dart';
 import 'package:kycbscore/presentation/widgets/background_image.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -17,7 +19,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
 
   late AuthCubit authCubit;
-  final TextEditingController name = TextEditingController();
+  final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
 
   @override
@@ -49,6 +51,29 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+              BlocConsumer<AuthCubit, AuthState>(
+
+                      builder: (context, state) {
+                        if(state is AuthLoading){
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: size.width * 0.45),
+                            child: const CircularProgressIndicator(),
+                          );
+                        } else
+                        if (state is AuthError) {
+                          return const Text("Some Error! Try Again");
+                        }
+                        return const SizedBox.shrink();
+                      },
+                      listener: (context, state) {
+                        if(state is AuthLoaded){
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomeScreen()), (route) => false);
+                        }                        
+                      }),
+               
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -64,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: Center(
                         child: TextField(
-                          controller: name,
+                          controller: email,
                           style: TextStyle(fontSize: 11.sp, color: Colors.white),
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -123,23 +148,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     height: 15.h,
                   ),
-                  BlocConsumer<AuthCubit, AuthState>(
-                      buildWhen: (previous, current) =>
-                          current is AuthError,
-                      builder: (context, state) {
-                        if (state is AuthError) {
-                          return const Text("Some Error");
-                        }
-                        return const SizedBox.shrink();
-                      },
-                      listenWhen: (previous, current) =>
-                          current is AuthLoaded,
-                      listener: (context, state) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomeScreen()));
-                      }),
                   SizedBox(
                     height: 10.h,
                   ),
@@ -151,10 +159,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: kBlue,
                     ),
                     child: TextButton(
-                      onPressed: () {
-                        var uname = name.text.split("@");
+                      onPressed: () {                        
                          Map<String, dynamic> query = {
-                            "username": uname[0],
+                            "email": email.text,
                             "password": password.text
                           };
                           authCubit.loginUser(query);
@@ -172,11 +179,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
+                 
               GestureDetector(
                 onTap: () => {
-                  Navigator.push( context,
+                  Navigator.pushAndRemoveUntil( context,
                             MaterialPageRoute(
-                                builder: (context) => CreateNewAccount()))
+                                builder: (context) => const CreateNewAccount()), (route) => false)
                    
                 },
                 child: Row(
@@ -190,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onTap: () {
                           Navigator.push( context,
                           MaterialPageRoute(
-                              builder: (context) => CreateNewAccount()));
+                              builder: (context) => const CreateNewAccount()));
                     
                         },
                         child: Padding(

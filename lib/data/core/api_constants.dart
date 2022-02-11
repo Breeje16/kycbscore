@@ -2,7 +2,7 @@ class ApiConstants {
   ApiConstants._();
 
   static const String baseVersion1URL =
-      'https://kycbscore.herokuapp.com/api/v1';
+      'https://kycbscores.herokuapp.com/api/v1';
       
   static const String registerURL = '/auth/register/';
   static const String authTokenURL = '/auth/token/';
